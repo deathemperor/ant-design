@@ -47,13 +47,16 @@ export default function ItemHolder(props: ItemHolderProps) {
     required,
     isRequired,
     onSubItemMetaChange,
-    layout,
+    layout: propsLayout,
+    name,
     ...restProps
   } = props;
 
   const itemPrefixCls = `${prefixCls}-item`;
-  const { requiredMark, vertical: formVertical } = React.useContext(FormContext);
-  const vertical = formVertical || layout === 'vertical';
+  const { requiredMark, layout: formLayout } = React.useContext(FormContext);
+  const layout = propsLayout || formLayout;
+
+  const vertical = layout === 'vertical';
 
   // ======================== Margin ========================
   const itemRef = React.useRef<HTMLDivElement>(null);
@@ -69,7 +72,7 @@ export default function ItemHolder(props: ItemHolderProps) {
       // The element must be part of the DOMTree to use getComputedStyle
       // https://stackoverflow.com/questions/35360711/getcomputedstyle-returns-a-cssstyledeclaration-but-all-properties-are-empty-on-a
       const itemStyle = getComputedStyle(itemRef.current);
-      setMarginBottom(parseInt(itemStyle.marginBottom, 10));
+      setMarginBottom(Number.parseInt(itemStyle.marginBottom, 10));
     }
   }, [hasError, isOnScreen]);
 
@@ -173,6 +176,7 @@ export default function ItemHolder(props: ItemHolderProps) {
               hasFeedback={hasFeedback}
               // Already calculated
               validateStatus={mergedValidateStatus}
+              name={name}
             >
               {children}
             </StatusProvider>
